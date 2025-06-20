@@ -12,7 +12,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useEffect } from "react";
 import { router } from "expo-router";
-import AuthRedirectHandler from "@/screens/AuthRedirectHandler";
+// import AuthRedirectHandler from "@/screens/AuthRedirectHandler";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -65,11 +65,15 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
-        {!user ? (
-          <Stack.Screen name="LoginScreen" options={{ headerShown: false }} />
-        ) : (
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        )}
+        <Stack.Screen
+          name="(screens)/profile"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="(screens)/AddProfileScreen"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

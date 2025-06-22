@@ -1,19 +1,19 @@
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
+import { Colors } from "@/constants/Colors";
+import { useAuthStore } from "@/stores/authStore";
+import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors } from "@/constants/Colors";
-import Button from "@/components/ui/Button";
-import { useAuthStore } from "@/stores/authStore";
-import Input from "@/components/ui/Input";
-import { router } from "expo-router";
+import i18n from "../../i18n.js";
 
 const LoginScreen = ({ navigation }) => {
   const { user } = useAuthStore();
@@ -67,7 +67,7 @@ const LoginScreen = ({ navigation }) => {
 
         <View style={styles.formContainer}>
           <Input
-            label="Email"
+            label={i18n.t("email")}
             placeholder="Enter your email"
             keyboardType="email-address"
             autoCapitalize="none"
@@ -77,7 +77,7 @@ const LoginScreen = ({ navigation }) => {
           />
 
           <Input
-            label="Password"
+            label={i18n.t("password")}
             placeholder="Enter your password"
             isPassword
             value={password}

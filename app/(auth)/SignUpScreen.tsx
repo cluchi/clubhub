@@ -1,21 +1,22 @@
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
+import { Colors } from "@/constants/Colors";
+import i18n from "@/i18n";
+import { useAuthStore } from "@/stores/authStore";
+import { Feather } from "@expo/vector-icons";
+import { Provider } from "@supabase/auth-js";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Feather } from "@expo/vector-icons";
-import { Colors } from "@/constants/Colors";
-import Input from "@/components/ui/Input";
-import Button from "@/components/ui/Button";
-import { useAuthStore } from "@/stores/authStore";
-import { router } from "expo-router";
-import { Provider } from "@supabase/auth-js";
 
 interface SignUpScreenProps {
   navigation: any;
@@ -93,7 +94,7 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation }) => {
             check your email and click the link to verify your account.
           </Text>
           <Button
-            title="Back to Login"
+            title={i18n.t("signUp.back_to_login")}
             onPress={handleBackToLogin}
             style={styles.backButton}
           />

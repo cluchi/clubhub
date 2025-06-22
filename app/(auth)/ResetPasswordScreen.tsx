@@ -1,20 +1,21 @@
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
+import { Colors } from "@/constants/Colors";
+import i18n from "@/i18n";
+import { useAuthStore } from "@/stores/authStore";
+import { Feather } from "@expo/vector-icons";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Feather } from "@expo/vector-icons";
-import { Colors } from "@/constants/Colors";
-import Input from "@/components/ui/Input";
-import Button from "@/components/ui/Button";
-import { useAuthStore } from "@/stores/authStore";
-import { router } from "expo-router";
 
 interface ResetPasswordScreenProps {
   navigation: any;
@@ -46,16 +47,16 @@ const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
           <View style={styles.confirmationIcon}>
             <Feather name="mail" size={48} color={Colors.primary} />
           </View>
-          <Text style={styles.confirmationTitle}>Check Your Email</Text>
+          <Text style={styles.confirmationTitle}>
+            {i18n.t("resetPassword.check_your_email")}
+          </Text>
           <Text style={styles.confirmationText}>
-            {"We've sent a password reset link to "}
-            {emailForVerification}
-            {
-              ". Please check your email and follow the instructions to reset your password."
-            }
+            {i18n.t("resetPassword.confirmation_text", {
+              emailForVerification,
+            })}
           </Text>
           <Button
-            title="Back to Login"
+            title={i18n.t("resetPassword.back_to_login")}
             onPress={handleBackToLogin}
             style={styles.backButton}
           />
@@ -86,7 +87,9 @@ const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
                 color={Colors.neutral.darkGray}
               />
             </TouchableOpacity>
-            <Text style={styles.title}>Reset Password</Text>
+            <Text style={styles.title}>
+              {i18n.t("resetPassword.reset_password")}
+            </Text>
             <Text style={styles.subtitle}>
               Enter your email address and we&apos;ll send you a link to reset
               your password
@@ -95,8 +98,8 @@ const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
 
           <View style={styles.formContainer}>
             <Input
-              label="Email"
-              placeholder="Enter your email"
+              label={i18n.t("resetPassword.email")}
+              placeholder={i18n.t("resetPassword.placeholder_email")}
               keyboardType="email-address"
               autoCapitalize="none"
               value={email}
@@ -107,7 +110,7 @@ const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
             {error && <Text style={styles.errorText}>{error}</Text>}
 
             <Button
-              title="Send Reset Link"
+              title={i18n.t("resetPassword.send_reset_link")}
               onPress={handleResetPassword}
               isLoading={isLoading}
               style={styles.resetButton}
@@ -116,9 +119,9 @@ const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
 
           <View style={styles.footer}>
             <Text style={styles.footerText}>
-              Remember your password?{" "}
+              {i18n.t("resetPassword.remember_password")}?{" "}
               <Text style={styles.signInText} onPress={handleBackToLogin}>
-                Sign In
+                {i18n.t("resetPassword.sign_in")}
               </Text>
             </Text>
           </View>

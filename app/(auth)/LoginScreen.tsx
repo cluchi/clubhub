@@ -61,8 +61,8 @@ const LoginScreen = ({ navigation }) => {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
-          <Text style={styles.title}>ClubHub</Text>
-          <Text style={styles.subtitle}>Discover Your Next Adventure</Text>
+          <Text style={styles.title}>{i18n.t("common.club_hub")}</Text>
+          <Text style={styles.subtitle}>{i18n.t("common.discover")}</Text>
         </View>
 
         <View style={styles.formContainer}>
@@ -160,7 +160,9 @@ const LoginScreen = ({ navigation }) => {
                 📅
               </Text>
             </View>
-            <Text style={styles.benefitText}>Book instantly</Text>
+            <Text style={styles.benefitText}>
+              {i18n.t("login.book_instantly")}
+            </Text>
           </View>
         </View>
 
@@ -175,12 +177,12 @@ const LoginScreen = ({ navigation }) => {
           <View style={styles.termsContainer}>
             <TouchableOpacity>
               <Text style={styles.termsText}>
-                {i18n.t("login.terms_of_service")}
+                {i18n.t("common.terms_of_service")}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity>
               <Text style={styles.termsText}>
-                {i18n.t("login.privacy_policy")}
+                {i18n.t("common.privacy_policy")}
               </Text>
             </TouchableOpacity>
           </View>

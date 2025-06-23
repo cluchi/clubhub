@@ -1,19 +1,18 @@
+import { Colors } from "@/constants/Colors";
+import i18n from "@/i18n";
+import { useAuthStore } from "@/stores/authStore";
+import { useProfileStore } from "@/stores/profileStore";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import {
-  View,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
   Text,
   TextInput,
-  Button,
-  StyleSheet,
-  Alert,
   TouchableOpacity,
-  Platform,
-  KeyboardAvoidingView,
+  View,
 } from "react-native";
-import { useProfileStore } from "@/stores/profileStore";
-import { useAuthStore } from "@/stores/authStore";
-import { router } from "expo-router";
-import { Colors } from "@/constants/Colors";
 
 const AddProfileScreen = () => {
   const { addChild, isLoading, error: addChildError } = useProfileStore();
@@ -62,32 +61,32 @@ const AddProfileScreen = () => {
       keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
     >
       <View style={styles.inner}>
-        <Text style={styles.title}>Add New Profile</Text>
+        <Text style={styles.title}>{i18n.t("profile.add_new_profile")}</Text>
         {error && <Text style={styles.error}>{error}</Text>}
         <TextInput
           style={styles.input}
-          placeholder="Name"
+          placeholder={i18n.t("profile.name")}
           value={name}
           onChangeText={setName}
           autoCapitalize="words"
         />
         <TextInput
           style={styles.input}
-          placeholder="Age"
+          placeholder={i18n.t("profile.age")}
           value={age}
           onChangeText={setAge}
           keyboardType="numeric"
         />
         <TextInput
           style={styles.input}
-          placeholder="Avatar (e.g. M)"
+          placeholder={i18n.t("profile.avatar")}
           value={avatar}
           onChangeText={setAvatar}
           maxLength={2}
         />
         <TextInput
           style={styles.input}
-          placeholder="Color (hex, e.g. #3B82F6)"
+          placeholder={i18n.t("profile.color")}
           value={color}
           onChangeText={setColor}
         />
@@ -97,14 +96,16 @@ const AddProfileScreen = () => {
           disabled={isLoading}
         >
           <Text style={styles.buttonText}>
-            {isLoading ? "Adding..." : "Add Profile"}
+            {isLoading
+              ? i18n.t("profile.adding")
+              : i18n.t("profile.add_profile")}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.cancelButton}
           onPress={() => router.back()}
         >
-          <Text style={styles.cancelButtonText}>Cancel</Text>
+          <Text style={styles.cancelButtonText}>{i18n.t("common.cancel")}</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>

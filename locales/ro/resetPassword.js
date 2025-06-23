@@ -9,4 +9,6 @@ export default {
   sign_in: "Sign In",
   confirmation_text:
     "We've sent a password reset link to {{emailForVerification}}. Please check your email and follow the instructions to reset your password.",
+  enter_email_address:
+    " Enter your email address and we&apos;ll send you a link to reset  your password",
 };

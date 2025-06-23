@@ -10,6 +10,6 @@ export default {
   find_clubs: "Find clubs nearby",
   no_account: "Don't have an account",
   sign_up: "Sign Up",
-  terms_of_service: "Terms of Service",
-  privacy_policy: "Privacy Policy",
+
+  book_instantly: "Book instantly",
 };

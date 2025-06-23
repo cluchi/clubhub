@@ -3,6 +3,7 @@ import { I18n } from "i18n-js";
 import en from "./locales/en";
 import roCommon from "./locales/ro/common";
 import roLogin from "./locales/ro/login";
+import roAddProfile from "./locales/ro/profile";
 import roResetPassword from "./locales/ro/resetPassword";
 import roSignUp from "./locales/ro/signUp";
 
@@ -14,6 +15,7 @@ const translations = {
     resetPassword: roResetPassword,
     signUp: roSignUp,
     common: roCommon,
+    profile: roAddProfile,
   },
 };
 const i18n = new I18n(translations);

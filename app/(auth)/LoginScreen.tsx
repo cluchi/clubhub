@@ -1,6 +1,7 @@
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { Colors } from "@/constants/Colors";
+import i18n from "@/i18n";
 import { useAuthStore } from "@/stores/authStore";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -13,7 +14,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import i18n from "../../i18n.js";
 
 const LoginScreen = ({ navigation }) => {
   const { user } = useAuthStore();

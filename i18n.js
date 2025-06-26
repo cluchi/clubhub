@@ -1,12 +1,22 @@
 import { I18n } from "i18n-js";
 
 import en from "./locales/en";
-import ro from "./locales/ro";
+import roCommon from "./locales/ro/common";
+import roLogin from "./locales/ro/login";
+import roAddProfile from "./locales/ro/profile";
+import roResetPassword from "./locales/ro/resetPassword";
+import roSignUp from "./locales/ro/signUp";
 
 // Set the key-value pairs for the different languages
 const translations = {
   en,
-  ro,
+  ro: {
+    login: roLogin,
+    resetPassword: roResetPassword,
+    signUp: roSignUp,
+    common: roCommon,
+    profile: roAddProfile,
+  },
 };
 const i18n = new I18n(translations);
 

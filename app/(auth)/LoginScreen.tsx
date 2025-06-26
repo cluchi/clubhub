@@ -1,6 +1,7 @@
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { Colors } from "@/constants/Colors";
+import i18n from "@/i18n";
 import { useAuthStore } from "@/stores/authStore";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -13,7 +14,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import i18n from "../../i18n.js";
 
 const LoginScreen = ({ navigation }) => {
   const { user } = useAuthStore();
@@ -61,14 +61,14 @@ const LoginScreen = ({ navigation }) => {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
-          <Text style={styles.title}>ClubHub</Text>
-          <Text style={styles.subtitle}>Discover Your Next Adventure</Text>
+          <Text style={styles.title}>{i18n.t("common.club_hub")}</Text>
+          <Text style={styles.subtitle}>{i18n.t("common.discover")}</Text>
         </View>
 
         <View style={styles.formContainer}>
           <Input
-            label={i18n.t("email")}
-            placeholder="Enter your email"
+            label={i18n.t("login.email")}
+            placeholder={i18n.t("login.placeholder_email")}
             keyboardType="email-address"
             autoCapitalize="none"
             value={email}
@@ -77,8 +77,8 @@ const LoginScreen = ({ navigation }) => {
           />
 
           <Input
-            label={i18n.t("password")}
-            placeholder="Enter your password"
+            label={i18n.t("login.password")}
+            placeholder={i18n.t("login.placeholder_password")}
             isPassword
             value={password}
             onChangeText={setPassword}
@@ -95,18 +95,22 @@ const LoginScreen = ({ navigation }) => {
               >
                 {rememberMe && <Text style={styles.checkmark}>✓</Text>}
               </View>
-              <Text style={styles.rememberText}>Remember me</Text>
+              <Text style={styles.rememberText}>
+                {i18n.t("login.remember_me")}
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={handleForgotPassword}>
-              <Text style={styles.forgotText}>Forgot Password?</Text>
+              <Text style={styles.forgotText}>
+                {i18n.t("login.forgot_password")}?
+              </Text>
             </TouchableOpacity>
           </View>
 
           {error && <Text style={styles.errorText}>{error}</Text>}
 
           <Button
-            title="Sign In"
+            title={i18n.t("login.sign_in")}
             onPress={handleSignIn}
             isLoading={isLoading}
             style={styles.signInButton}
@@ -134,7 +138,7 @@ const LoginScreen = ({ navigation }) => {
         </View>
 
         <View style={styles.benefitsContainer}>
-          <Text style={styles.benefitsTitle}>Why Join ClubHub?</Text>
+          <Text style={styles.benefitsTitle}>{i18n.t("login.why_join")}?</Text>
 
           <View style={styles.benefitItem}>
             <View style={[styles.benefitIcon, { backgroundColor: "#E0F2F1" }]}>
@@ -142,7 +146,7 @@ const LoginScreen = ({ navigation }) => {
                 📍
               </Text>
             </View>
-            <Text style={styles.benefitText}>Find clubs nearby</Text>
+            <Text style={styles.benefitText}>{i18n.t("login.find_clubs")}</Text>
           </View>
 
           <View style={styles.benefitItem}>
@@ -156,24 +160,30 @@ const LoginScreen = ({ navigation }) => {
                 📅
               </Text>
             </View>
-            <Text style={styles.benefitText}>Book instantly</Text>
+            <Text style={styles.benefitText}>
+              {i18n.t("login.book_instantly")}
+            </Text>
           </View>
         </View>
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            {"Don't have an account?"}
+            {i18n.t("login.no_account")}
             <Text style={styles.signUpText} onPress={handleSignUp}>
-              {" Sign Up"}
+              {i18n.t("login.sign_up")}
             </Text>
           </Text>
 
           <View style={styles.termsContainer}>
             <TouchableOpacity>
-              <Text style={styles.termsText}>Terms of Service</Text>
+              <Text style={styles.termsText}>
+                {i18n.t("common.terms_of_service")}
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity>
-              <Text style={styles.termsText}>Privacy Policy</Text>
+              <Text style={styles.termsText}>
+                {i18n.t("common.privacy_policy")}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>

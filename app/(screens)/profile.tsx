@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  Alert,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Feather } from "@expo/vector-icons";
+import ProfileSwitcher from "@/components/ProfileSwitcher";
 import { Colors } from "@/constants/Colors";
 import { useAuthStore } from "@/stores/authStore";
+import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import ProfileSwitcher from "@/components/ProfileSwitcher";
+import React, { useEffect, useState } from "react";
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 // import { children } from "@/mocks/users";
+import i18n from "@/i18n";
 import { useProfileStore } from "@/stores/profileStore";
 
 interface ProfileScreenProps {
@@ -73,9 +74,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
                 color={Colors.neutral.darkGray}
               />
             </TouchableOpacity>
-            <Text style={styles.title}>Profile Page</Text>
+            <Text style={styles.title}>{i18n.t("profile.profile_page")}</Text>
             <Text style={styles.subtitle}>
-              Welcome, {user?.name || "Guest"}!
+              Welcome, {user?.name || i18n.t("profile.guest")}!
             </Text>
           </View>
 

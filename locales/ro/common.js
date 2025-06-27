@@ -9,6 +9,7 @@ export default {
   demo: "Demo",
   profile: "Profile",
   oops: "Oops!",
+  search: "Search",
   screen_not_exist: "This screen does not exist.",
   screen_go_to_home: "Go to home screen!",
 };

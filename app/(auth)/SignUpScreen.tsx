@@ -18,11 +18,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-interface SignUpScreenProps {
-  navigation: any;
-}
-
-const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation }) => {
+const SignUpScreen = () => {
   const { signUp, isLoading, error, mode } = useAuthStore();
   const [formData, setFormData] = useState({
     name: "",

@@ -24,7 +24,7 @@ import { children } from "@/mocks/users";
 import { router } from "expo-router";
 import { useProfileStore } from "@/stores/profileStore";
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = () => {
   const { user } = useAuthStore();
   const { fetchClubs, fetchCourses, featuredClubs } = useClubStore();
   const {
@@ -118,13 +118,13 @@ const HomeScreen = ({ navigation }) => {
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <TouchableOpacity
             style={styles.notificationButton}
-            onPress={() => navigation.navigate("Notifications")}
+            onPress={() => router.push("/(screens)/notifications")}
           >
             <Feather name="bell" size={24} color={Colors.neutral.darkest} />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.notificationButton}
-            onPress={() => router.replace("/(screens)/profile")}
+            onPress={() => router.push("/(screens)/profile")}
           >
             <Feather name="menu" size={24} color={Colors.neutral.darkest} />
           </TouchableOpacity>

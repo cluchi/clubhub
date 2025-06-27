@@ -14,6 +14,10 @@ interface ProfileActions {
   selectChild: (childId: string) => void;
   addChild: (parentId: string, child: Omit<Child, "id">) => Promise<void>;
   removeChild: (childId: string) => Promise<void>;
+  updateChild: (
+    childId: string,
+    updates: Partial<Omit<Child, "id">>
+  ) => Promise<void>;
 }
 
 export type ProfileStore = ProfileState & ProfileActions;
@@ -69,6 +73,29 @@ export const useProfileStore = create<ProfileStore>((set, get) => ({
 
     set((state) => ({
       children: [...state.children, data as Child],
+      isLoading: false,
+      error: null,
+    }));
+  },
+
+  updateChild: async (childId, updates) => {
+    set({ isLoading: true, error: null });
+    const { data, error } = await supabase
+      .from("children")
+      .update(updates)
+      .eq("id", childId)
+      .select()
+      .single();
+
+    if (error) {
+      set({ isLoading: false, error: error.message });
+      return;
+    }
+
+    set((state) => ({
+      children: state.children.map((child) =>
+        child.id === childId ? { ...child, ...updates } : child
+      ),
       isLoading: false,
       error: null,
     }));

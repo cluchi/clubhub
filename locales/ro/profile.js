@@ -10,4 +10,8 @@ export default {
   profile_page: "Pagina profilului",
   guest: "Vizitator",
   greeting: "Bun venit, {{name}}!",
+  edit_profile: "Editează profilul",
+  save_changes: "Salvează modificările",
+  saving: "Se salvează...",
+  child_not_found: "Profilul nu a fost găsit.",
 };

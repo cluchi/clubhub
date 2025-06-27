@@ -99,27 +99,40 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
                 );
                 if (!selectedChild) return null;
                 return (
-                  <View>
-                    <Text
-                      style={{
-                        color: Colors.neutral.dark,
-                        fontWeight: "bold",
-                        fontSize: 16,
-                        marginBottom: 4,
-                      }}
+                  <>
+                    <View>
+                      <Text
+                        style={{
+                          color: Colors.neutral.dark,
+                          fontWeight: "bold",
+                          fontSize: 16,
+                          marginBottom: 4,
+                        }}
+                      >
+                        {i18n.t("profile.name")}: {selectedChild?.name}
+                      </Text>
+                      <Text
+                        style={{
+                          color: Colors.neutral.dark,
+                          fontWeight: "bold",
+                          fontSize: 14,
+                        }}
+                      >
+                        {i18n.t("profile.age")}: {selectedChild?.age}
+                      </Text>
+                    </View>
+                    <TouchableOpacity
+                      style={{ marginLeft: 12, padding: 6 }}
+                      onPress={() =>
+                        router.push({
+                          pathname: "/(screens)/EditProfileScreen",
+                          params: { childId: selectedChildId },
+                        })
+                      }
                     >
-                      {i18n.t("profile.name")}: {selectedChild?.name}
-                    </Text>
-                    <Text
-                      style={{
-                        color: Colors.neutral.dark,
-                        fontWeight: "bold",
-                        fontSize: 14,
-                      }}
-                    >
-                      {i18n.t("profile.age")}: {selectedChild?.age}
-                    </Text>
-                  </View>
+                      <Feather name="edit" size={24} color={Colors.primary} />
+                    </TouchableOpacity>
+                  </>
                 );
               })()}
             </View>

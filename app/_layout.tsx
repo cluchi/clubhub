@@ -73,6 +73,10 @@ export default function RootLayout() {
           name="(screens)/AddProfileScreen"
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="(screens)/EditProfileScreen"
+          options={{ headerShown: false }}
+        />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>

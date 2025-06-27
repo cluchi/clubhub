@@ -17,13 +17,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-interface ResetPasswordScreenProps {
-  navigation: any;
-}
-
-const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
-  navigation,
-}) => {
+const ResetPasswordScreen = () => {
   const { resetPassword, isLoading, error, mode, emailForVerification } =
     useAuthStore();
   const [email, setEmail] = useState("");

@@ -15,7 +15,7 @@ import {
   View,
 } from "react-native";
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = () => {
   const { user } = useAuthStore();
 
   const { signIn, signUp, mode, setMode, isLoading, error } = useAuthStore();
@@ -26,7 +26,7 @@ const LoginScreen = ({ navigation }) => {
   // Watch for user state change and navigate
   useEffect(() => {
     if (user) {
-      router.replace("/(tabs)");
+      router.replace("/(tabs)/home");
     }
   }, [user]);
 

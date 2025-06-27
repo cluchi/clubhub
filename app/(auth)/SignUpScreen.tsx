@@ -1,21 +1,22 @@
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
+import { Colors } from "@/constants/Colors";
+import i18n from "@/i18n";
+import { useAuthStore } from "@/stores/authStore";
+import { Feather } from "@expo/vector-icons";
+import { Provider } from "@supabase/auth-js";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Feather } from "@expo/vector-icons";
-import { Colors } from "@/constants/Colors";
-import Input from "@/components/ui/Input";
-import Button from "@/components/ui/Button";
-import { useAuthStore } from "@/stores/authStore";
-import { router } from "expo-router";
-import { Provider } from "@supabase/auth-js";
 
 interface SignUpScreenProps {
   navigation: any;
@@ -39,22 +40,22 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation }) => {
 
   const validateForm = () => {
     if (!formData.name.trim()) {
-      return "Please enter your full name";
+      return i18n.t("signUp.validation_full_name");
     }
     if (!formData.email.trim()) {
-      return "Please enter your email address";
+      return i18n.t("signUp.validation_email_address");
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      return "Please enter a valid email address";
+      return i18n.t("signUp.validation_valid_email_address");
     }
     if (formData.password.length < 6) {
-      return "Password must be at least 6 characters long";
+      return i18n.t("signUp.validation_characters_long");
     }
     if (formData.password !== formData.confirmPassword) {
-      return "Passwords do not match";
+      return i18n.t("signUp.validation_passwords_do_not_match");
     }
     if (!acceptTerms) {
-      return "Please accept the Terms of Service and Privacy Policy";
+      return i18n.t("signUp.validation_terms_of_service");
     }
     return null;
   };
@@ -87,13 +88,14 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation }) => {
           <View style={styles.verificationIcon}>
             <Feather name="mail" size={48} color={Colors.primary} />
           </View>
-          <Text style={styles.verificationTitle}>Check Your Email</Text>
+          <Text style={styles.verificationTitle}>
+            {i18n.t("signUp.check_your_email")}
+          </Text>
           <Text style={styles.verificationText}>
-            We&apos;ve sent a verification link to {formData.email}. Please
-            check your email and click the link to verify your account.
+            {i18n.t("signUp.verification_link", { email: formData.email })}
           </Text>
           <Button
-            title="Back to Login"
+            title={i18n.t("signUp.back_to_login")}
             onPress={handleBackToLogin}
             style={styles.backButton}
           />
@@ -124,16 +126,14 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation }) => {
                 color={Colors.neutral.darkGray}
               />
             </TouchableOpacity>
-            <Text style={styles.title}>Create Account</Text>
-            <Text style={styles.subtitle}>
-              Join ClubHub and start your journey
-            </Text>
+            <Text style={styles.title}>{i18n.t("create_account")}</Text>
+            <Text style={styles.subtitle}>{i18n.t("signUp.join_clubHub")}</Text>
           </View>
 
           <View style={styles.formContainer}>
             <Input
-              label="Full Name"
-              placeholder="Enter your full name"
+              label={i18n.t("signUp.full_name")}
+              placeholder={i18n.t("signUp.placeholder_full_name")}
               value={formData.name}
               onChangeText={(value) => handleInputChange("name", value)}
               leftIcon="user"
@@ -141,8 +141,8 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation }) => {
             />
 
             <Input
-              label="Email"
-              placeholder="Enter your email"
+              label={i18n.t("signUp.email")}
+              placeholder={i18n.t("signUp.placeholder_email")}
               keyboardType="email-address"
               autoCapitalize="none"
               value={formData.email}
@@ -151,8 +151,8 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation }) => {
             />
 
             <Input
-              label="Password"
-              placeholder="Create a password"
+              label={i18n.t("signUp.password")}
+              placeholder={i18n.t("signUp.placeholder_password")}
               isPassword={!showPassword}
               value={formData.password}
               onChangeText={(value) => handleInputChange("password", value)}
@@ -162,8 +162,8 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation }) => {
             />
 
             <Input
-              label="Confirm Password"
-              placeholder="Confirm your password"
+              label={i18n.t("signUp.confirm_password")}
+              placeholder={i18n.t("signUp.placeholder_confirm_password")}
               isPassword={!showConfirmPassword}
               value={formData.confirmPassword}
               onChangeText={(value) =>
@@ -190,9 +190,16 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation }) => {
                   {acceptTerms && <Text style={styles.checkmark}>✓</Text>}
                 </View>
                 <Text style={styles.termsText}>
-                  I agree to the{" "}
-                  <Text style={styles.linkText}>Terms of Service</Text> and{" "}
-                  <Text style={styles.linkText}>Privacy Policy</Text>
+                  {i18n.t("common.agree_to")}{" "}
+                  <Text style={styles.linkText}>
+                    {" "}
+                    {i18n.t("common.terms_of_service")}
+                  </Text>{" "}
+                  and{" "}
+                  <Text style={styles.linkText}>
+                    {" "}
+                    {i18n.t("common.privacy_policy")}
+                  </Text>
                 </Text>
               </TouchableOpacity>
             </View>
@@ -200,7 +207,7 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation }) => {
             {error && <Text style={styles.errorText}>{error}</Text>}
 
             <Button
-              title="Create Account"
+              title={i18n.t("signUp.create_account")}
               onPress={handleSignUp}
               isLoading={isLoading}
               style={styles.signUpButton}
@@ -235,9 +242,9 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation }) => {
 
           <View style={styles.footer}>
             <Text style={styles.footerText}>
-              Already have an account?{" "}
+              {i18n.t("signUp.already_an_account")}{" "}
               <Text style={styles.signInText} onPress={handleBackToLogin}>
-                Sign In
+                {i18n.t("signUp.sign_in")}
               </Text>
             </Text>
           </View>

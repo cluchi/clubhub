@@ -76,7 +76,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
             </TouchableOpacity>
             <Text style={styles.title}>{i18n.t("profile.profile_page")}</Text>
             <Text style={styles.subtitle}>
-              Welcome, {user?.name || i18n.t("profile.guest")}!
+              {i18n.t("profile.greeting", {
+                name: user?.name || i18n.t("profile.guest"),
+              })}
             </Text>
           </View>
 
@@ -106,7 +108,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
                         marginBottom: 4,
                       }}
                     >
-                      Name: {selectedChild?.name}
+                      {i18n.t("profile.name")}: {selectedChild?.name}
                     </Text>
                     <Text
                       style={{
@@ -115,7 +117,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
                         fontSize: 14,
                       }}
                     >
-                      Age: {selectedChild?.age}
+                      {i18n.t("profile.age")}: {selectedChild?.age}
                     </Text>
                   </View>
                 );

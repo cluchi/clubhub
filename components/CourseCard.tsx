@@ -33,7 +33,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
           <Image source={{ uri: placeholderImage }} style={styles.image} />
         </View>
         <View style={styles.content}>
-          <Text style={styles.name}>{course.name}</Text>
+          <Text style={styles.name}>{course.name} (Course)</Text>
           <Text style={styles.clubName}>{course.clubId}</Text>
 
           <View style={styles.detailsContainer}>

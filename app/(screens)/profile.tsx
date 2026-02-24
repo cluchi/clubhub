@@ -132,6 +132,33 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
                     >
                       <Feather name="edit" size={24} color={Colors.primary} />
                     </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{ marginLeft: 12, padding: 6 }}
+                      onPress={async () => {
+                        Alert.alert(
+                          i18n.t("profile.delete_profile") || "Delete Profile",
+                          i18n.t("profile.delete_confirm") ||
+                            "Are you sure you want to delete this profile?",
+                          [
+                            {
+                              text: i18n.t("common.cancel") || "Cancel",
+                              style: "cancel",
+                            },
+                            {
+                              text: i18n.t("common.delete") || "Delete",
+                              style: "destructive",
+                              onPress: async () => {
+                                await useProfileStore
+                                  .getState()
+                                  .removeChild(selectedChildId);
+                              },
+                            },
+                          ]
+                        );
+                      }}
+                    >
+                      <Feather name="delete" size={24} color={Colors.primary} />
+                    </TouchableOpacity>
                   </>
                 );
               })()}

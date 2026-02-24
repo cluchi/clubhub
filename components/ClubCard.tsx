@@ -25,7 +25,7 @@ const ClubCard: React.FC<ClubCardProps> = ({ club, onPress }) => {
           />
         </View>
         <View style={styles.content}>
-          <Text style={styles.name}>{club.name}</Text>
+          <Text style={styles.name}>{club.name} (Club)</Text>
           <View style={styles.ratingContainer}>
             <Feather name="star" size={16} color="#F59E0B" />
             <Text style={styles.rating}>

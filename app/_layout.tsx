@@ -65,6 +65,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
           name="(screens)/profile"
           options={{ headerShown: false }}
@@ -77,7 +78,11 @@ export default function RootLayout() {
           name="(screens)/EditProfileScreen"
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+
+        <Stack.Screen
+          name="(screens)/[clubId]"
+          options={{ headerShown: false }}
+        />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

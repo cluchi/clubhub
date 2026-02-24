@@ -24,6 +24,7 @@ interface ClubState {
 
 interface ClubActions {
   fetchClubs: () => Promise<void>;
+  fetchClubById: (clubId: string) => Promise<void>;
   fetchCourses: () => Promise<void>;
   setFilters: (filters: Partial<ClubFilters>) => void;
   clearFilters: () => void;
@@ -51,6 +52,42 @@ export const useClubStore = create<ClubStore>((set, get) => ({
   selectedCourse: null,
   isLoading: false,
   error: null,
+
+  fetchClubById: async (clubId: string) => {
+    set({ isLoading: true, error: null });
+    try {
+      const { data, error } = await supabase
+        .from("clubs")
+        .select("*")
+        .eq("id", clubId)
+        .single();
+
+      if (error || !data) {
+        // Fallback to mock data if Supabase fails
+        const club = clubs.find((c) => c.id === clubId) || null;
+        set({
+          selectedClub: club,
+          isLoading: false,
+          error: "Using offline data. Some features may be limited.",
+        });
+        return;
+      }
+
+      set({
+        selectedClub: data,
+        isLoading: false,
+        error: null,
+      });
+    } catch (error) {
+      // Fallback to mock data
+      const club = clubs.find((c) => c.id === clubId) || null;
+      set({
+        selectedClub: club,
+        isLoading: false,
+        error: "Using offline data. Please check your connection.",
+      });
+    }
+  },
 
   fetchClubs: async () => {
     set({ isLoading: true, error: null });

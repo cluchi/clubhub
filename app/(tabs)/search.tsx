@@ -89,7 +89,10 @@ const SearchScreen = () => {
 
   const handleClubPress = (clubId: string) => {
     console.log(`Navigating to club with ID: ${clubId}`);
-    // navigation.navigate("ClubProfile", { clubId });
+    router.push({
+      pathname: "/(screens)/[clubId]",
+      params: { clubId },
+    });
   };
 
   const renderCategoryChip = (category: Category) => (
@@ -154,7 +157,7 @@ const SearchScreen = () => {
         </View>
       </View>
 
-      <View style={styles.resultsHeader}>
+      <View style={styles.categoriesHeader}>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -362,6 +365,13 @@ const styles = StyleSheet.create({
     marginLeft: 6,
     fontSize: 14,
     color: Colors.neutral.dark,
+  },
+  categoriesHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 0,
+    paddingVertical: 0,
   },
   resultsHeader: {
     flexDirection: "row",

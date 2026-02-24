@@ -14,4 +14,6 @@ export default {
   save_changes: "Salvează modificările",
   saving: "Se salvează...",
   child_not_found: "Profilul nu a fost găsit.",
+  delete_profile: "Șterge profilul",
+  delete_confirm: "Sigur vrei să ștergi acest profil?",
 };

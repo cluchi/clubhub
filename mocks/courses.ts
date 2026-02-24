@@ -27,6 +27,72 @@ export interface Course {
 
 export const courses: Course[] = [
   {
+    id: "11",
+    clubId: "3",
+    name: "Swimming Lessons",
+    description:
+      "Learn to swim with confidence in our beginner-friendly swimming lessons. Our experienced instructors will guide you through water safety and basic swimming techniques.",
+    instructor: {
+      name: "Coach Emma",
+      bio: "Emma is a certified swimming instructor with 10 years of experience teaching all ages.",
+      experience: "10+ years",
+      avatar: "E",
+    },
+    schedule: [
+      {
+        days: ["Monday", "Wednesday"],
+        time: "4:00 PM",
+      },
+      {
+        days: ["Tuesday", "Thursday"],
+        time: "5:00 PM",
+      },
+    ],
+    pricing: {
+      dropIn: 25,
+      monthly: 120,
+      quarterly: 300,
+    },
+    ageRange: "4-6 years",
+    skillLevel: "Beginner",
+    spotsAvailable: 6,
+    totalSpots: 8,
+    category: "Swimming",
+  },
+  {
+    id: "111",
+    clubId: "3",
+    name: "Swimming Lessons",
+    description:
+      "Learn to swim with confidence in our beginner-friendly swimming lessons. Our experienced instructors will guide you through water safety and basic swimming techniques.",
+    instructor: {
+      name: "Coach Emma",
+      bio: "Emma is a certified swimming instructor with 10 years of experience teaching all ages.",
+      experience: "10+ years",
+      avatar: "E",
+    },
+    schedule: [
+      {
+        days: ["Monday", "Wednesday"],
+        time: "4:00 PM",
+      },
+      {
+        days: ["Tuesday", "Thursday"],
+        time: "5:00 PM",
+      },
+    ],
+    pricing: {
+      dropIn: 25,
+      monthly: 120,
+      quarterly: 300,
+    },
+    ageRange: "+12 years",
+    skillLevel: "Advanced",
+    spotsAvailable: 5,
+    totalSpots: 8,
+    category: "Swimming",
+  },
+  {
     id: "1",
     clubId: "3",
     name: "Swimming Lessons",

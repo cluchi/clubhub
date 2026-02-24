@@ -4,7 +4,6 @@ export default {
   terms_of_service: "Terms of Service",
   privacy_policy: "Privacy Policy",
   agree_to: " I agree to the",
-  cancel: "Cancel",
   home: "Home",
   demo: "Demo",
   profile: "Profile",
@@ -12,4 +11,6 @@ export default {
   search: "Search",
   screen_not_exist: "This screen does not exist.",
   screen_go_to_home: "Go to home screen!",
+  delete: "Șterge",
+  cancel: "Anulează",
 };

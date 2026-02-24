@@ -13,4 +13,5 @@ export default {
   screen_go_to_home: "Go to home screen!",
   delete: "Șterge",
   cancel: "Anulează",
+  logout: "Deconectare",
 };

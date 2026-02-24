@@ -24,7 +24,7 @@ interface ProfileScreenProps {
 }
 
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
-  const { user } = useAuthStore();
+  const { user, signOut, isLoading } = useAuthStore();
   const {
     fetchChildren,
     children: profileChildren,
@@ -32,11 +32,40 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   } = useProfileStore();
 
   const [selectedChildId, setSelectedChildId] = useState(
-    profileChildren[0]?.id || ""
+    profileChildren[0]?.id || "",
   );
 
   const handleBack = () => {
     router.replace("/(tabs)/home");
+  };
+
+  const handleLogout = () => {
+    Alert.alert(
+      i18n.t("common.logout") || "Logout",
+      i18n.t("profile.logout_confirm") || "Are you sure you want to logout?",
+      [
+        {
+          text: i18n.t("common.cancel") || "Cancel",
+          style: "cancel",
+        },
+        {
+          text: i18n.t("common.logout") || "Logout",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await signOut();
+              // Navigation will be handled by the auth store's auth state listener
+            } catch (error) {
+              console.error("Logout error:", error);
+              Alert.alert(
+                "Error",
+                "An error occurred while logging out. Please try again.",
+              );
+            }
+          },
+        },
+      ],
+    );
   };
 
   const onAddChild = () => {
@@ -80,6 +109,17 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
                 name: user?.name || i18n.t("profile.guest"),
               })}
             </Text>
+            <TouchableOpacity
+              style={styles.logoutButtonHeader}
+              onPress={handleLogout}
+              disabled={isLoading}
+            >
+              <Feather
+                name="log-out"
+                size={24}
+                color={Colors.neutral.darkGray}
+              />
+            </TouchableOpacity>
           </View>
 
           <View style={[styles.profileContainer]}>
@@ -95,7 +135,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
             <View style={{ marginLeft: 16, justifyContent: "center" }}>
               {(() => {
                 const selectedChild = profileChildren.find(
-                  (child) => child.id === selectedChildId
+                  (child) => child.id === selectedChildId,
                 );
                 if (!selectedChild) return null;
                 return (
@@ -153,7 +193,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
                                   .removeChild(selectedChildId);
                               },
                             },
-                          ]
+                          ],
                         );
                       }}
                     >
@@ -187,6 +227,12 @@ const styles = StyleSheet.create({
   backButtonHeader: {
     position: "absolute",
     left: 0,
+    top: 20,
+    padding: 8,
+  },
+  logoutButtonHeader: {
+    position: "absolute",
+    right: 0,
     top: 20,
     padding: 8,
   },

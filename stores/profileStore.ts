@@ -16,7 +16,7 @@ interface ProfileActions {
   removeChild: (childId: string) => Promise<void>;
   updateChild: (
     childId: string,
-    updates: Partial<Omit<Child, "id">>
+    updates: Partial<Omit<Child, "id">>,
   ) => Promise<void>;
 }
 
@@ -94,7 +94,7 @@ export const useProfileStore = create<ProfileStore>((set, get) => ({
 
     set((state) => ({
       children: state.children.map((child) =>
-        child.id === childId ? { ...child, ...updates } : child
+        child.id === childId ? { ...child, ...updates } : child,
       ),
       isLoading: false,
       error: null,

@@ -34,7 +34,7 @@ const HomeScreen = () => {
   } = useProfileStore();
 
   const [selectedChildId, setSelectedChildId] = useState(
-    profileChildren[0]?.id || ""
+    profileChildren[0]?.id || "",
   );
 
   useEffect(() => {
@@ -108,7 +108,7 @@ const HomeScreen = () => {
   };
 
   const selectedChild = profileChildren.find(
-    (child) => child.id === selectedChildId
+    (child) => child.id === selectedChildId,
   );
 
   return (

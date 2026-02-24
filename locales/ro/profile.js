@@ -16,4 +16,5 @@ export default {
   child_not_found: "Profilul nu a fost găsit.",
   delete_profile: "Șterge profilul",
   delete_confirm: "Sigur vrei să ștergi acest profil?",
+  logout_confirm: "Sigur vrei să te deconectezi?",
 };

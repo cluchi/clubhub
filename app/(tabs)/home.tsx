@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -31,12 +31,9 @@ const HomeScreen = () => {
   const {
     fetchChildren,
     children: profileChildren,
-    // selectedChildId,
+    selectedChildId,
+    selectChild,
   } = useProfileStore();
-
-  const [selectedChildId, setSelectedChildId] = useState(
-    profileChildren[0]?.id || "",
-  );
 
   useEffect(() => {
     fetchClubs();
@@ -108,9 +105,9 @@ const HomeScreen = () => {
     router.push("/(screens)/AddProfileScreen");
   };
 
-  const selectedChild = profileChildren.find(
-    (child) => child.id === selectedChildId,
-  );
+  const selectedChild = selectedChildId
+    ? profileChildren.find((child) => child.id === selectedChildId)
+    : null;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -131,7 +128,7 @@ const HomeScreen = () => {
 
         <ProfileSwitcher
           selectedChildId={selectedChildId}
-          onSelectChild={setSelectedChildId}
+          onSelectChild={selectChild}
           onAddChild={onAddChild}
         >
           {profileChildren}

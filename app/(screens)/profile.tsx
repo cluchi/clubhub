@@ -28,12 +28,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const {
     fetchChildren,
     children: profileChildren,
-    // selectedChildId,
+    selectedChildId,
+    selectChild,
   } = useProfileStore();
-
-  const [selectedChildId, setSelectedChildId] = useState(
-    profileChildren[0]?.id || "",
-  );
 
   const handleBack = () => {
     router.replace("/(tabs)/home");
@@ -125,7 +122,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           <View style={[styles.profileContainer]}>
             <ProfileSwitcher
               selectedChildId={selectedChildId || ""}
-              onSelectChild={setSelectedChildId}
+              onSelectChild={selectChild}
               onAddChild={onAddChild}
             >
               {profileChildren}

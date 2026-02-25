@@ -121,7 +121,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
 
           <View style={[styles.profileContainer]}>
             <ProfileSwitcher
-              selectedChildId={selectedChildId || ""}
+              selectedChildId={selectedChildId}
               onSelectChild={selectChild}
               onAddChild={onAddChild}
             >

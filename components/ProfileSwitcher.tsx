@@ -11,7 +11,7 @@ import { Child } from "@/mocks/users";
 
 interface ProfileSwitcherProps {
   children: Child[];
-  selectedChildId: string;
+  selectedChildId: string | null;
   onSelectChild: (childId: string) => void;
   onAddChild?: () => void;
 }

@@ -13,6 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import ClubCard from "@/components/ClubCard";
+import AppHeader from "@/components/AppHeader";
 import Card from "@/components/ui/Card";
 import { useClubStore } from "@/stores/clubStore";
 
@@ -30,7 +31,13 @@ const SearchScreen = () => {
   const router = useRouter();
   const params = useLocalSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState(params?.category || "");
+  const [activeCategory, setActiveCategory] = useState<string | null>(
+    params?.category
+      ? Array.isArray(params.category)
+        ? params.category[0]
+        : params.category
+      : null,
+  );
   const [viewMode, setViewMode] = useState("list"); // 'list' or 'map'
 
   useEffect(() => {
@@ -38,7 +45,10 @@ const SearchScreen = () => {
 
     // Apply category filter from route params if provided
     if (params?.category) {
-      setFilters({ category: params.category });
+      const category = Array.isArray(params.category)
+        ? params.category[0]
+        : params.category;
+      setFilters({ category });
     }
   }, []);
 
@@ -128,15 +138,7 @@ const SearchScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.logo}>ClubHub</Text>
-        <TouchableOpacity
-          style={styles.notificationButton}
-          onPress={() => router.replace("/(screens)/notifications")}
-        >
-          <Feather name="bell" size={24} color={Colors.neutral.darkest} />
-        </TouchableOpacity>
-      </View>
+      <AppHeader />
 
       <View style={styles.searchContainer}>
         <View style={styles.searchInputContainer}>

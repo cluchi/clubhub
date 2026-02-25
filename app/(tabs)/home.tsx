@@ -13,6 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import ProfileSwitcher from "@/components/ProfileSwitcher";
+import AppHeader from "@/components/AppHeader";
 // import QuickActions from "@/components/QuickActions";
 // import ClubCard from "@/components/ClubCard";
 // import CourseCard from "@/components/CourseCard";
@@ -113,23 +114,7 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.logo}>ClubHub</Text>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <TouchableOpacity
-            style={styles.notificationButton}
-            onPress={() => router.push("/(screens)/notifications")}
-          >
-            <Feather name="bell" size={24} color={Colors.neutral.darkest} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.notificationButton}
-            onPress={() => router.push("/(screens)/profile")}
-          >
-            <Feather name="menu" size={24} color={Colors.neutral.darkest} />
-          </TouchableOpacity>
-        </View>
-      </View>
+      <AppHeader />
 
       <ScrollView
         showsVerticalScrollIndicator={false}

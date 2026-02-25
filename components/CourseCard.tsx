@@ -1,22 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import Card from "@/components/ui/Card";
 import Button from "./ui/Button";
+import SubscriptionModal from "./SubscriptionModal";
 import { Course } from "@/mocks/courses";
+import { useSubscriptionStore } from "@/stores/subscriptionStore";
+import { useProfileStore } from "@/stores/profileStore";
+import { Child } from "@/mocks/users";
 
 interface CourseCardProps {
   course: Course;
   onPress: () => void;
-  onSubscribe: () => void;
 }
 
-const CourseCard: React.FC<CourseCardProps> = ({
-  course,
-  onPress,
-  onSubscribe,
-}) => {
+const CourseCard: React.FC<CourseCardProps> = ({ course, onPress }) => {
+  const { selectedChildId, children } = useProfileStore();
+  const { getSubscriptionForCourse } = useSubscriptionStore();
+
+  // Get subscription status for the selected child
+  const subscription = selectedChildId
+    ? getSubscriptionForCourse(course.id, selectedChildId)
+    : null;
+
+  // Get selected child data
+  const selectedChild = selectedChildId
+    ? children.find((child) => child.id === selectedChildId) || null
+    : null;
+
+  // State for subscription modal
+  const [isSubscriptionModalVisible, setIsSubscriptionModalVisible] =
+    useState(false);
   // Placeholder image for demo purposes
   const placeholderImage = "https://via.placeholder.com/150";
 
@@ -59,21 +74,53 @@ const CourseCard: React.FC<CourseCardProps> = ({
             </View>
           </View>
 
+          {subscription && (
+            <View style={styles.subscriptionStatus}>
+              <View
+                style={[
+                  styles.statusIndicator,
+                  {
+                    backgroundColor:
+                      subscription.status === "active"
+                        ? Colors.status.success
+                        : subscription.status === "expiring"
+                          ? Colors.status.warning
+                          : Colors.status.error,
+                  },
+                ]}
+              />
+              <Text style={styles.statusText}>
+                {subscription.status === "active"
+                  ? "Subscribed"
+                  : subscription.status === "expiring"
+                    ? "Expiring Soon"
+                    : "Expired"}
+              </Text>
+            </View>
+          )}
+
           <View style={styles.footer}>
             <View style={styles.priceContainer}>
               <Text style={styles.priceLabel}>Monthly</Text>
               <Text style={styles.price}>${course.pricing.monthly}</Text>
             </View>
             <Button
-              title="Subscribe"
-              variant="primary"
+              title={subscription ? "Manage" : "Subscribe"}
+              variant={subscription ? "outline" : "primary"}
               size="small"
-              onPress={onSubscribe}
+              onPress={() => setIsSubscriptionModalVisible(true)}
               style={styles.subscribeButton}
             />
           </View>
         </View>
       </Card>
+
+      <SubscriptionModal
+        visible={isSubscriptionModalVisible}
+        onClose={() => setIsSubscriptionModalVisible(false)}
+        course={course}
+        selectedChild={selectedChild}
+      />
     </TouchableOpacity>
   );
 };
@@ -139,6 +186,26 @@ const styles = StyleSheet.create({
   subscribeButton: {
     paddingVertical: 6,
     paddingHorizontal: 12,
+  },
+  subscriptionStatus: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    backgroundColor: Colors.neutral.lightest,
+    borderRadius: 16,
+  },
+  statusIndicator: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 8,
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: Colors.neutral.dark,
   },
 });
 

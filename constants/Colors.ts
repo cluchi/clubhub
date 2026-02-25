@@ -28,6 +28,8 @@ export const Colors = {
     blue: "#3B82F6",
     purple: "#8B5CF6",
     orange: "#F97316",
+    green: "#10B981",
+    red: "#EF4444",
   },
   neutral: {
     white: "#FFFFFF",

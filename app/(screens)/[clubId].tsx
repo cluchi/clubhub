@@ -4,39 +4,48 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  ScrollView,
-  Image,
   FlatList,
+  Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
+import CourseCard from "@/components/CourseCard";
 import { useClubStore } from "@/stores/clubStore";
-import { courses } from "@/mocks/courses";
 import { useLocalSearchParams, router } from "expo-router";
+import { Course } from "@/mocks/courses";
 
 const ClubProfileScreen = () => {
   const { clubId } = useLocalSearchParams();
   console.log("ClubProfileScreen clubId:", clubId);
-  const { fetchClubById, isLoading, selectedClub } = useClubStore();
+  const { fetchClubById, isLoading, selectedClub, courses, fetchCourses } =
+    useClubStore();
   const [activeTab, setActiveTab] = useState("overview");
 
   useEffect(() => {
     if (clubId) {
       fetchClubById(clubId as string);
+      fetchCourses();
     } // TODO handle type safety
-  }, [clubId, fetchClubById]);
+  }, [clubId, fetchClubById, fetchCourses]);
 
   // Get courses for this club
-  const clubCourses = courses; //.filter((c) => c.clubId === clubId);
+  const clubCourses = courses.filter(
+    (course: Course) => course.clubId === clubId,
+  );
 
   // Placeholder image for demo purposes
   const placeholderImage = "https://via.placeholder.com/400x200";
 
   const handleCoursePress = (courseId: string) => {
     // navigation.navigate("CourseDetail", { courseId });
+    // console.log(`Navigating to club with ID: ${clubId}`);
+    // router.push({
+    //   pathname: "/(screens)/[courseId]",
+    //   params: { courseId },
+    // });
   };
 
   const handleContactPress = () => {
@@ -73,281 +82,279 @@ const ClubProfileScreen = () => {
     );
   }
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => router.back()}
-          >
-            <Feather name="arrow-left" size={24} color={Colors.neutral.white} />
-          </TouchableOpacity>
+  // Header component for FlatList
+  const renderHeader = () => (
+    <>
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
+          <Feather name="arrow-left" size={24} color={Colors.neutral.white} />
+        </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.shareButton}
-            onPress={handleSharePress}
-          >
-            <Feather name="share-2" size={24} color={Colors.neutral.white} />
-          </TouchableOpacity>
+        <TouchableOpacity style={styles.shareButton} onPress={handleSharePress}>
+          <Feather name="share-2" size={24} color={Colors.neutral.white} />
+        </TouchableOpacity>
 
-          <Image source={{ uri: placeholderImage }} style={styles.coverImage} />
+        <Image source={{ uri: placeholderImage }} style={styles.coverImage} />
 
-          <View style={styles.clubImageContainer}>
-            <Image
-              source={{ uri: placeholderImage }}
-              style={styles.clubImage}
-            />
-          </View>
-
-          <View style={styles.clubHeaderInfo}>
-            <Text style={styles.clubName}>{selectedClub.name}</Text>
-            <View style={styles.ratingContainer}>
-              <Feather name="star" size={16} color="#F59E0B" />
-              <Text style={styles.rating}>
-                {selectedClub.rating} ({selectedClub.reviewCount} reviews)
-              </Text>
-            </View>
-            <View style={styles.locationContainer}>
-              <Feather
-                name="map-pin"
-                size={14}
-                color={Colors.neutral.darkGray}
-              />
-              <Text style={styles.location}>
-                {selectedClub.location}, {selectedClub.distance} km away
-              </Text>
-            </View>
-          </View>
+        <View style={styles.clubImageContainer}>
+          <Image source={{ uri: placeholderImage }} style={styles.clubImage} />
         </View>
 
-        <View style={styles.tabsContainer}>
-          <TouchableOpacity
-            style={[styles.tab, activeTab === "overview" && styles.activeTab]}
-            onPress={() => setActiveTab("overview")}
-          >
-            <Text
-              style={[
-                styles.tabText,
-                activeTab === "overview" && styles.activeTabText,
-              ]}
-            >
-              Overview
+        <View style={styles.clubHeaderInfo}>
+          <Text style={styles.clubName}>{selectedClub.name}</Text>
+          <View style={styles.ratingContainer}>
+            <Feather name="star" size={16} color="#F59E0B" />
+            <Text style={styles.rating}>
+              {selectedClub.rating} ({selectedClub.reviewCount} reviews)
             </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.tab, activeTab === "courses" && styles.activeTab]}
-            onPress={() => setActiveTab("courses")}
-          >
-            <Text
-              style={[
-                styles.tabText,
-                activeTab === "courses" && styles.activeTabText,
-              ]}
-            >
-              Courses
+          </View>
+          <View style={styles.locationContainer}>
+            <Feather name="map-pin" size={14} color={Colors.neutral.darkGray} />
+            <Text style={styles.location}>
+              {selectedClub.location}, {selectedClub.distance} km away
             </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.tab, activeTab === "reviews" && styles.activeTab]}
-            onPress={() => setActiveTab("reviews")}
-          >
-            <Text
-              style={[
-                styles.tabText,
-                activeTab === "reviews" && styles.activeTabText,
-              ]}
-            >
-              Reviews
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.tab, activeTab === "contact" && styles.activeTab]}
-            onPress={() => setActiveTab("contact")}
-          >
-            <Text
-              style={[
-                styles.tabText,
-                activeTab === "contact" && styles.activeTabText,
-              ]}
-            >
-              Contact
-            </Text>
-          </TouchableOpacity>
+          </View>
         </View>
+      </View>
 
-        <View style={styles.contentContainer}>
-          {activeTab === "overview" && (
-            <View>
-              <Text style={styles.sectionTitle}>About {selectedClub.name}</Text>
-              <Text style={styles.description}>{selectedClub.description}</Text>
+      <View style={styles.tabsContainer}>
+        <TouchableOpacity
+          style={[styles.tab, activeTab === "overview" && styles.activeTab]}
+          onPress={() => setActiveTab("overview")}
+        >
+          <Text
+            style={[
+              styles.tabText,
+              activeTab === "overview" && styles.activeTabText,
+            ]}
+          >
+            Overview
+          </Text>
+        </TouchableOpacity>
 
-              <Text style={styles.sectionTitle}>Amenities</Text>
-              <View style={styles.amenitiesGrid}>
-                {selectedClub.amenities.map((amenity, index) => (
-                  <View key={index} style={styles.amenityItem}>
-                    <View style={styles.amenityIcon}>
-                      <Feather name="check" size={16} color={Colors.primary} />
-                    </View>
-                    <Text style={styles.amenityText}>{amenity}</Text>
+        <TouchableOpacity
+          style={[styles.tab, activeTab === "courses" && styles.activeTab]}
+          onPress={() => setActiveTab("courses")}
+        >
+          <Text
+            style={[
+              styles.tabText,
+              activeTab === "courses" && styles.activeTabText,
+            ]}
+          >
+            Courses
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.tab, activeTab === "reviews" && styles.activeTab]}
+          onPress={() => setActiveTab("reviews")}
+        >
+          <Text
+            style={[
+              styles.tabText,
+              activeTab === "reviews" && styles.activeTabText,
+            ]}
+          >
+            Reviews
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.tab, activeTab === "contact" && styles.activeTab]}
+          onPress={() => setActiveTab("contact")}
+        >
+          <Text
+            style={[
+              styles.tabText,
+              activeTab === "contact" && styles.activeTabText,
+            ]}
+          >
+            Contact
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </>
+  );
+
+  // Content for different tabs
+  const renderContent = () => {
+    switch (activeTab) {
+      case "overview":
+        return (
+          <View style={styles.contentContainer}>
+            <Text style={styles.sectionTitle}>About {selectedClub.name}</Text>
+            <Text style={styles.description}>{selectedClub.description}</Text>
+
+            <Text style={styles.sectionTitle}>Amenities</Text>
+            <View style={styles.amenitiesGrid}>
+              {selectedClub.amenities.map((amenity, index) => (
+                <View key={index} style={styles.amenityItem}>
+                  <View style={styles.amenityIcon}>
+                    <Feather name="check" size={16} color={Colors.primary} />
                   </View>
-                ))}
-              </View>
-
-              <Text style={styles.sectionTitle}>Operating Hours</Text>
-              {/* TODO {Object.entries(selectedClub.operatingHours).map(
-                ([day, hours], index) => (
-                  <View key={index} style={styles.hoursItem}>
-                    <Text style={styles.dayText}>{day}</Text>
-                    <Text style={styles.hoursText}>
-                      {hours.open} - {hours.close}
-                    </Text>
-                  </View>
-                )
-              )} */}
-            </View>
-          )}
-
-          {activeTab === "courses" && (
-            <View>
-              <Text style={styles.sectionTitle}>Available Courses</Text>
-              {clubCourses.map((course) => (
-                <TouchableOpacity
-                  key={course.id}
-                  style={styles.courseCard}
-                  onPress={() => handleCoursePress(course.id)}
-                >
-                  <View style={styles.courseImagePlaceholder} />
-                  <View style={styles.courseInfo}>
-                    <Text style={styles.courseName}>{course.name}</Text>
-                    <Text style={styles.instructorName}>
-                      Instructor: {course.instructor.name}
-                    </Text>
-                    <View style={styles.courseDetails}>
-                      <View style={styles.courseDetail}>
-                        <Feather
-                          name="users"
-                          size={14}
-                          color={Colors.neutral.darkGray}
-                        />
-                        <Text style={styles.detailText}>{course.ageRange}</Text>
-                      </View>
-                      <View style={styles.courseDetail}>
-                        <Feather
-                          name="award"
-                          size={14}
-                          color={Colors.neutral.darkGray}
-                        />
-                        <Text style={styles.detailText}>
-                          {course.skillLevel}
-                        </Text>
-                      </View>
-                    </View>
-                    <View style={styles.courseFooter}>
-                      <Text style={styles.coursePrice}>
-                        ${course.pricing.monthly}/mo
-                      </Text>
-                      <Text style={styles.courseAvailability}>
-                        {course.spotsAvailable} spots left
-                      </Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
+                  <Text style={styles.amenityText}>{amenity}</Text>
+                </View>
               ))}
             </View>
-          )}
 
-          {activeTab === "reviews" && (
-            <View>
-              <View style={styles.reviewsSummary}>
-                <Text style={styles.reviewsRating}>{selectedClub.rating}</Text>
-                <View style={styles.starsContainer}>
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Feather
-                      key={star}
-                      name="star"
-                      size={20}
-                      color={
-                        star <= Math.floor(selectedClub.rating)
-                          ? "#F59E0B"
-                          : Colors.neutral.medium
-                      }
-                      style={styles.starIcon}
-                    />
-                  ))}
+            <Text style={styles.sectionTitle}>Operating Hours</Text>
+            {/* TODO {Object.entries(selectedClub.operatingHours).map(
+              ([day, hours], index) => (
+                <View key={index} style={styles.hoursItem}>
+                  <Text style={styles.dayText}>{day}</Text>
+                  <Text style={styles.hoursText}>
+                    {hours.open} - {hours.close}
+                  </Text>
                 </View>
-                <Text style={styles.reviewsCount}>
-                  Based on {selectedClub.reviewCount} reviews
+              )
+            )} */}
+          </View>
+        );
+
+      case "courses":
+        return (
+          <View style={styles.contentContainer}>
+            <Text style={styles.sectionTitle}>Available Courses</Text>
+            {clubCourses.length > 0 ? (
+              <FlatList
+                data={clubCourses}
+                renderItem={({ item: course }) => (
+                  <CourseCard
+                    course={course}
+                    onPress={() => handleCoursePress(course.id)}
+                  />
+                )}
+                keyExtractor={(course) => course.id}
+                contentContainerStyle={styles.coursesList}
+                showsVerticalScrollIndicator={false}
+              />
+            ) : (
+              <View style={styles.emptyCourses}>
+                <Feather
+                  name="package"
+                  size={48}
+                  color={Colors.neutral.medium}
+                />
+                <Text style={styles.emptyCoursesTitle}>
+                  No Courses Available
+                </Text>
+                <Text style={styles.emptyCoursesText}>
+                  This club does not have any courses available yet.
                 </Text>
               </View>
+            )}
+          </View>
+        );
 
-              <Text style={styles.noReviewsText}>
-                Reviews will be displayed here.
+      case "reviews":
+        return (
+          <View style={styles.contentContainer}>
+            <View style={styles.reviewsSummary}>
+              <Text style={styles.reviewsRating}>{selectedClub.rating}</Text>
+              <View style={styles.starsContainer}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Feather
+                    key={star}
+                    name="star"
+                    size={20}
+                    color={
+                      star <= Math.floor(selectedClub.rating)
+                        ? "#F59E0B"
+                        : Colors.neutral.medium
+                    }
+                    style={styles.starIcon}
+                  />
+                ))}
+              </View>
+              <Text style={styles.reviewsCount}>
+                Based on {selectedClub.reviewCount} reviews
               </Text>
             </View>
-          )}
 
-          {activeTab === "contact" && (
-            <View>
-              <Card style={styles.contactCard}>
-                <View style={styles.contactItem}>
-                  <Feather
-                    name="phone"
-                    size={20}
-                    color={Colors.primary}
-                    style={styles.contactIcon}
-                  />
-                  <View style={styles.contactInfo}>
-                    <Text style={styles.contactLabel}>Phone</Text>
-                    <Text style={styles.contactValue}>
-                      {selectedClub.contact.phone}
-                    </Text>
-                  </View>
+            <Text style={styles.noReviewsText}>
+              Reviews will be displayed here.
+            </Text>
+          </View>
+        );
+
+      case "contact":
+        return (
+          <View style={styles.contentContainer}>
+            <Card style={styles.contactCard}>
+              <View style={styles.contactItem}>
+                <Feather
+                  name="phone"
+                  size={20}
+                  color={Colors.primary}
+                  style={styles.contactIcon}
+                />
+                <View style={styles.contactInfo}>
+                  <Text style={styles.contactLabel}>Phone</Text>
+                  <Text style={styles.contactValue}>
+                    {selectedClub.contact.phone}
+                  </Text>
                 </View>
+              </View>
 
-                <View style={styles.contactItem}>
-                  <Feather
-                    name="mail"
-                    size={20}
-                    color={Colors.primary}
-                    style={styles.contactIcon}
-                  />
-                  <View style={styles.contactInfo}>
-                    <Text style={styles.contactLabel}>Email</Text>
-                    <Text style={styles.contactValue}>
-                      {selectedClub.contact.email}
-                    </Text>
-                  </View>
+              <View style={styles.contactItem}>
+                <Feather
+                  name="mail"
+                  size={20}
+                  color={Colors.primary}
+                  style={styles.contactIcon}
+                />
+                <View style={styles.contactInfo}>
+                  <Text style={styles.contactLabel}>Email</Text>
+                  <Text style={styles.contactValue}>
+                    {selectedClub.contact.email}
+                  </Text>
                 </View>
+              </View>
 
-                <View style={styles.contactItem}>
-                  <Feather
-                    name="map-pin"
-                    size={20}
-                    color={Colors.primary}
-                    style={styles.contactIcon}
-                  />
-                  <View style={styles.contactInfo}>
-                    <Text style={styles.contactLabel}>Address</Text>
-                    <Text style={styles.contactValue}>
-                      {selectedClub.contact.address}
-                    </Text>
-                  </View>
+              <View style={styles.contactItem}>
+                <Feather
+                  name="map-pin"
+                  size={20}
+                  color={Colors.primary}
+                  style={styles.contactIcon}
+                />
+                <View style={styles.contactInfo}>
+                  <Text style={styles.contactLabel}>Address</Text>
+                  <Text style={styles.contactValue}>
+                    {selectedClub.contact.address}
+                  </Text>
                 </View>
-              </Card>
+              </View>
+            </Card>
 
-              <Button
-                title="Contact Club"
-                onPress={handleContactPress}
-                style={styles.contactButton}
-              />
-            </View>
-          )}
-        </View>
-      </ScrollView>
+            <Button
+              title="Contact Club"
+              onPress={handleContactPress}
+              style={styles.contactButton}
+            />
+          </View>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <FlatList
+        ListHeaderComponent={renderHeader}
+        ListFooterComponent={renderContent}
+        data={[]}
+        renderItem={() => null}
+        keyExtractor={() => "empty"}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 20 }}
+      />
     </SafeAreaView>
   );
 };
@@ -639,6 +646,28 @@ const styles = StyleSheet.create({
   },
   contactButton: {
     marginTop: 8,
+  },
+  coursesList: {
+    paddingBottom: 16,
+  },
+  emptyCourses: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 40,
+  },
+  emptyCoursesTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: Colors.neutral.darkest,
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  emptyCoursesText: {
+    fontSize: 14,
+    color: Colors.neutral.darkGray,
+    textAlign: "center",
+    lineHeight: 20,
   },
 });
 

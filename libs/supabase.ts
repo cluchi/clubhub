@@ -213,6 +213,7 @@ export interface Database {
           id: string;
           child_id: string;
           course_id: string;
+          subscription_type: "drop_in" | "monthly" | "quarterly";
           status: "active" | "expiring" | "expired" | "on_hold";
           start_date: string;
           end_date: string;
@@ -220,11 +221,13 @@ export interface Database {
           renewal_date: string;
           payment_method: string;
           created_at: string;
+          updated_at: string;
         };
         Insert: {
           id?: string;
           child_id: string;
           course_id: string;
+          subscription_type: "drop_in" | "monthly" | "quarterly";
           status?: "active" | "expiring" | "expired" | "on_hold";
           start_date: string;
           end_date: string;
@@ -232,17 +235,20 @@ export interface Database {
           renewal_date: string;
           payment_method: string;
           created_at?: string;
+          updated_at?: string;
         };
         Update: {
           id?: string;
           child_id?: string;
           course_id?: string;
+          subscription_type?: "drop_in" | "monthly" | "quarterly";
           status?: "active" | "expiring" | "expired" | "on_hold";
           start_date?: string;
           end_date?: string;
           next_session?: string;
           renewal_date?: string;
           payment_method?: string;
+          updated_at?: string;
         };
       };
       bookings: {

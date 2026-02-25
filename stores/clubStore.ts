@@ -147,12 +147,12 @@ export const useClubStore = create<ClubStore>((set, get) => ({
         .select(
           `
           *,
-          clubs!inner(
+          clubs (
             id,
             name,
             location
           )
-        `
+        `,
         )
         .order("created_at", { ascending: false });
 
@@ -169,8 +169,38 @@ export const useClubStore = create<ClubStore>((set, get) => ({
 
       console.log("✅ Fetched", data?.length || 0, "courses from Supabase");
 
-      // Use Supabase data if available, otherwise fallback to mock data
-      const coursesData = data && data.length > 0 ? data : courses;
+      // Transform database response to match CourseCard expectations
+      let coursesData;
+      if (data && data.length > 0) {
+        // Transform database response to match Course interface
+        coursesData = data.map((course: any) => ({
+          ...course,
+          clubId: course.clubs?.id || course.club_id,
+          // Ensure all required fields are present
+          instructor: course.instructor || {
+            name: "Instructor",
+            bio: "",
+            experience: "",
+            avatar: "I",
+          },
+          schedule: course.schedule || [
+            {
+              days: ["Monday"],
+              time: "10:00 AM",
+            },
+          ],
+          pricing: course.pricing || {
+            dropIn: 20,
+            monthly: 100,
+            quarterly: 250,
+          },
+          ageRange: course.age_range || "5-12 years",
+          skillLevel: course.skill_level || "Beginner",
+          category: course.category || "General",
+        }));
+      } else {
+        coursesData = courses;
+      }
 
       set({
         courses: coursesData,
@@ -200,13 +230,13 @@ export const useClubStore = create<ClubStore>((set, get) => ({
 
     if (updatedFilters.category) {
       filtered = filtered.filter(
-        (club) => club.category === updatedFilters.category
+        (club) => club.category === updatedFilters.category,
       );
     }
 
     if (updatedFilters.location) {
       filtered = filtered.filter((club) =>
-        club.location.includes(updatedFilters.location || "")
+        club.location.includes(updatedFilters.location || ""),
       );
     }
 
@@ -215,7 +245,7 @@ export const useClubStore = create<ClubStore>((set, get) => ({
       filtered = filtered.filter(
         (club) =>
           club.name.toLowerCase().includes(query) ||
-          club.description.toLowerCase().includes(query)
+          club.description.toLowerCase().includes(query),
       );
     }
 

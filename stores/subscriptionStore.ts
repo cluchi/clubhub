@@ -31,7 +31,7 @@ const createSubscriptionBookings = async (
     const course = courses.find((c) => c.id === courseId);
 
     if (!course) {
-      console.warn("Course not found for creating bookings");
+      console.warn("Course not found for creating bookings:", courseId);
       return;
     }
 

@@ -71,6 +71,9 @@ export interface AuthActions {
   clearError: () => void;
   setLoading: (loading: boolean) => void;
   setUser: (user: User | null) => void;
+
+  // Initialization
+  initializeAuth: () => Promise<void>;
 }
 
 export type AuthStore = AuthState & AuthActions;
@@ -229,7 +232,7 @@ export const useAuthStore = create<AuthStore>()(
           if (data.user) {
             console.log(
               "✅ Sign up successful, verification email sent to:",
-              email
+              email,
             );
             set({
               isLoading: false,
@@ -281,7 +284,7 @@ export const useAuthStore = create<AuthStore>()(
             email.trim().toLowerCase(),
             {
               redirectTo: "https://your-app.com/reset-password", // This won't work in Expo, but we handle it via auth state change
-            }
+            },
           );
 
           if (error) {
@@ -370,35 +373,66 @@ export const useAuthStore = create<AuthStore>()(
 
         if (error) {
           console.error("❌ Error getting initial session:", error);
-        } else if (session?.user) {
-          console.log("✅ Found existing session for user:", session.user.id);
+          // Clear any corrupted session data
+          set({ user: null, isEmailVerified: false, error: null });
+        } else if (session) {
+          if (session.user && session.user.id) {
+            // ✅ Valid session with user - proceed normally
+            console.log("✅ Found existing session for user:", session.user.id);
 
-          // Get user profile
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("*")
-            .eq("id", session.user.id)
-            .single();
+            // Get user profile
+            const { data: profile } = await supabase
+              .from("profiles")
+              .select("*")
+              .eq("id", session.user.id)
+              .single();
 
-          const user: User = {
-            id: session.user.id,
-            email: session.user.email!,
-            name:
-              profile?.name ||
-              session.user.user_metadata?.name ||
-              session.user.email!.split("@")[0],
-          };
+            const user: User = {
+              id: session.user.id,
+              email: session.user.email!,
+              name:
+                profile?.name ||
+                session.user.user_metadata?.name ||
+                session.user.email!.split("@")[0],
+            };
 
-          set({ user, isEmailVerified: true, error: null });
+            set({ user, isEmailVerified: true, error: null });
+          } else {
+            // ❌ Session exists but user is missing - this is the core issue
+            console.warn("⚠️ Session exists but user data is missing:", {
+              hasSession: !!session,
+              hasUser: !!session?.user,
+              hasUserId: !!session?.user?.id,
+              sessionData: session,
+            });
+
+            // Clear the corrupted session and redirect to login
+            await supabase.auth.signOut();
+            set({
+              user: null,
+              isEmailVerified: false,
+              error: null,
+              mode: "signin",
+            });
+          }
+        } else {
+          // No session - normal case
+          set({ user: null, isEmailVerified: false, error: null });
         }
 
         // Listen for auth changes
         supabase.auth.onAuthStateChange(async (event, session) => {
-          console.log("🔐 Auth state change:", event, session?.user?.id);
+          console.log(
+            "🔐 Auth state change:",
+            event,
+            session?.user,
+            session?.user?.id,
+          );
 
           switch (event) {
             case "SIGNED_IN":
-              if (session?.user) {
+              if (session?.user && session.user.id) {
+                // ✅ Valid session with user - proceed normally
                 const { data: profile } = await supabase
                   .from("profiles")
                   .select("*")
@@ -417,6 +451,23 @@ export const useAuthStore = create<AuthStore>()(
                 set({
                   user,
                   isEmailVerified: true,
+                  error: null,
+                  mode: "signin",
+                });
+              } else if (session) {
+                // ❌ Session exists but user is missing - handle corrupted session
+                console.warn("⚠️ SIGNED_IN event but user data is missing:", {
+                  hasSession: !!session,
+                  hasUser: !!session?.user,
+                  hasUserId: !!session?.user?.id,
+                  sessionData: session,
+                });
+
+                // Clear the corrupted session
+                await supabase.auth.signOut();
+                set({
+                  user: null,
+                  isEmailVerified: false,
                   error: null,
                   mode: "signin",
                 });
@@ -472,6 +523,6 @@ export const useAuthStore = create<AuthStore>()(
         user: state.user,
         isEmailVerified: state.isEmailVerified,
       }),
-    }
-  )
+    },
+  ),
 );

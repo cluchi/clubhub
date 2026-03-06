@@ -13,11 +13,28 @@ export default function NotFoundScreen() {
         <ThemedText type="title">
           {i18n.t("common.screen_not_exist")}
         </ThemedText>
-        <Link href="/" style={styles.link}>
-          <ThemedText type="link">
-            {i18n.t("common.screen_go_to_home")}
+
+        <ThemedView style={styles.navigationContainer}>
+          <ThemedText style={styles.navigationTitle}>
+            {i18n.t("common.navigate_to")}
           </ThemedText>
-        </Link>
+
+          <Link href="/(auth)/LoginScreen" style={styles.navLink}>
+            <ThemedText type="link">{i18n.t("common.login")}</ThemedText>
+          </Link>
+
+          <Link href="/(tabs)/home" style={styles.navLink}>
+            <ThemedText type="link">{i18n.t("common.home")}</ThemedText>
+          </Link>
+
+          <Link href="/(tabs)/search" style={styles.navLink}>
+            <ThemedText type="link">{i18n.t("common.search")}</ThemedText>
+          </Link>
+
+          <Link href="/(screens)/profile" style={styles.navLink}>
+            <ThemedText type="link">{i18n.t("common.profile")}</ThemedText>
+          </Link>
+        </ThemedView>
       </ThemedView>
     </>
   );
@@ -30,8 +47,24 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
   },
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
+  navigationContainer: {
+    marginTop: 30,
+    width: "100%",
+    alignItems: "center",
+  },
+  navigationTitle: {
+    fontSize: 16,
+    color: "#666",
+    marginBottom: 20,
+    fontWeight: "500",
+  },
+  navLink: {
+    backgroundColor: "#f8f9fa",
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginVertical: 6,
+    minWidth: 200,
+    alignItems: "center",
   },
 });

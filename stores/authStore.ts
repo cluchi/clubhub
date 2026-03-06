@@ -364,75 +364,49 @@ export const useAuthStore = create<AuthStore>()(
       // Initialize auth state listener
       initializeAuth: async () => {
         console.log("🔐 Initializing auth state listener");
+        set({ isLoading: true, error: null });
 
-        // Get initial session
-        const {
-          data: { session },
-          error,
-        } = await supabase.auth.getSession();
-
-        if (error) {
-          console.error("❌ Error getting initial session:", error);
-          // Clear any corrupted session data
-          set({ user: null, isEmailVerified: false, error: null });
-        } else if (session) {
-          if (session.user && session.user.id) {
-            // ✅ Valid session with user - proceed normally
-            console.log("✅ Found existing session for user:", session.user.id);
-
-            // Get user profile
-            const { data: profile } = await supabase
-              .from("profiles")
-              .select("*")
-              .eq("id", session.user.id)
-              .single();
-
-            const user: User = {
-              id: session.user.id,
-              email: session.user.email!,
-              name:
-                profile?.name ||
-                session.user.user_metadata?.name ||
-                session.user.email!.split("@")[0],
-            };
-
-            set({ user, isEmailVerified: true, error: null });
-          } else {
-            // ❌ Session exists but user is missing - this is the core issue
-            console.warn("⚠️ Session exists but user data is missing:", {
-              hasSession: !!session,
-              hasUser: !!session?.user,
-              hasUserId: !!session?.user?.id,
-              sessionData: session,
+        try {
+          // Validate Supabase configuration first
+          if (!supabase || !supabase.auth) {
+            console.error("❌ Supabase not properly initialized");
+            set({
+              user: null,
+              isEmailVerified: false,
+              error: "Authentication service unavailable",
+              isLoading: false,
             });
+            return;
+          }
 
-            // Clear the corrupted session and redirect to login
-            await supabase.auth.signOut();
+          // Get initial session
+          const {
+            data: { session },
+            error,
+          } = await supabase.auth.getSession();
+
+          if (error) {
+            console.error("❌ Error getting initial session:", error);
+            // Clear any corrupted session data
             set({
               user: null,
               isEmailVerified: false,
               error: null,
-              mode: "signin",
+              isLoading: false,
             });
+            return;
           }
-        } else {
-          // No session - normal case
-          set({ user: null, isEmailVerified: false, error: null });
-        }
 
-        // Listen for auth changes
-        supabase.auth.onAuthStateChange(async (event, session) => {
-          console.log(
-            "🔐 Auth state change:",
-            event,
-            session?.user,
-            session?.user?.id,
-          );
+          if (session) {
+            if (session.user && session.user.id) {
+              // ✅ Valid session with user - proceed normally
+              console.log(
+                "✅ Found existing session for user:",
+                session.user.id,
+              );
 
-          switch (event) {
-            case "SIGNED_IN":
-              if (session?.user && session.user.id) {
-                // ✅ Valid session with user - proceed normally
+              try {
+                // Get user profile
                 const { data: profile } = await supabase
                   .from("profiles")
                   .select("*")
@@ -452,50 +426,201 @@ export const useAuthStore = create<AuthStore>()(
                   user,
                   isEmailVerified: true,
                   error: null,
-                  mode: "signin",
+                  isLoading: false,
                 });
-              } else if (session) {
-                // ❌ Session exists but user is missing - handle corrupted session
-                console.warn("⚠️ SIGNED_IN event but user data is missing:", {
-                  hasSession: !!session,
-                  hasUser: !!session?.user,
-                  hasUserId: !!session?.user?.id,
-                  sessionData: session,
-                });
+              } catch (profileError) {
+                console.error("❌ Error fetching profile:", profileError);
+                // Create profile if it doesn't exist
+                try {
+                  const { error: insertError } = await supabase
+                    .from("profiles")
+                    .insert({
+                      id: session.user.id,
+                      email: session.user.email!,
+                      name:
+                        session.user.user_metadata?.name ||
+                        session.user.email!.split("@")[0],
+                    });
 
-                // Clear the corrupted session
-                await supabase.auth.signOut();
-                set({
-                  user: null,
-                  isEmailVerified: false,
-                  error: null,
-                  mode: "signin",
-                });
+                  if (insertError) {
+                    console.error("❌ Profile creation error:", insertError);
+                  }
+
+                  const user: User = {
+                    id: session.user.id,
+                    email: session.user.email!,
+                    name:
+                      session.user.user_metadata?.name ||
+                      session.user.email!.split("@")[0],
+                  };
+
+                  set({
+                    user,
+                    isEmailVerified: true,
+                    error: null,
+                    isLoading: false,
+                  });
+                } catch (createError) {
+                  console.error("❌ Failed to create profile:", createError);
+                  set({
+                    user: null,
+                    isEmailVerified: false,
+                    error: "Failed to load user data",
+                    isLoading: false,
+                  });
+                }
               }
-              break;
+            } else {
+              // ❌ Session exists but user is missing - this is the core issue
+              console.warn("⚠️ Session exists but user data is missing:", {
+                hasSession: !!session,
+                hasUser: !!session?.user,
+                hasUserId: !!session?.user?.id,
+                sessionData: session,
+              });
 
-            case "SIGNED_OUT":
+              // Clear the corrupted session and redirect to login
+              try {
+                await supabase.auth.signOut();
+              } catch (signOutError) {
+                console.error(
+                  "❌ Error signing out corrupted session:",
+                  signOutError,
+                );
+              }
+
               set({
                 user: null,
                 isEmailVerified: false,
                 error: null,
                 mode: "signin",
-                emailForVerification: null,
+                isLoading: false,
               });
-              break;
-
-            case "PASSWORD_RECOVERY":
-              set({ mode: "reset", error: null });
-              break;
-
-            case "TOKEN_REFRESHED":
-              console.log("✅ Token refreshed successfully");
-              break;
-
-            default:
-              break;
+            }
+          } else {
+            // No session - normal case
+            set({
+              user: null,
+              isEmailVerified: false,
+              error: null,
+              isLoading: false,
+            });
           }
-        });
+
+          // Listen for auth changes
+          const {
+            data: { subscription },
+          } = supabase.auth.onAuthStateChange(async (event, session) => {
+            console.log(
+              "🔐 Auth state change:",
+              event,
+              session?.user,
+              session?.user?.id,
+            );
+
+            try {
+              switch (event) {
+                case "SIGNED_IN":
+                  if (session?.user && session.user.id) {
+                    // ✅ Valid session with user - proceed normally
+                    const { data: profile } = await supabase
+                      .from("profiles")
+                      .select("*")
+                      .eq("id", session.user.id)
+                      .single();
+
+                    const user: User = {
+                      id: session.user.id,
+                      email: session.user.email!,
+                      name:
+                        profile?.name ||
+                        session.user.user_metadata?.name ||
+                        session.user.email!.split("@")[0],
+                    };
+
+                    set({
+                      user,
+                      isEmailVerified: true,
+                      error: null,
+                      mode: "signin",
+                      isLoading: false,
+                    });
+                  } else if (session) {
+                    // ❌ Session exists but user is missing - handle corrupted session
+                    console.warn(
+                      "⚠️ SIGNED_IN event but user data is missing:",
+                      {
+                        hasSession: !!session,
+                        hasUser: !!session?.user,
+                        hasUserId: !!session?.user?.id,
+                        sessionData: session,
+                      },
+                    );
+
+                    // Clear the corrupted session
+                    try {
+                      await supabase.auth.signOut();
+                    } catch (signOutError) {
+                      console.error(
+                        "❌ Error signing out corrupted session:",
+                        signOutError,
+                      );
+                    }
+
+                    set({
+                      user: null,
+                      isEmailVerified: false,
+                      error: null,
+                      mode: "signin",
+                      isLoading: false,
+                    });
+                  }
+                  break;
+
+                case "SIGNED_OUT":
+                  set({
+                    user: null,
+                    isEmailVerified: false,
+                    error: null,
+                    mode: "signin",
+                    emailForVerification: null,
+                    isLoading: false,
+                  });
+                  break;
+
+                case "PASSWORD_RECOVERY":
+                  set({ mode: "reset", error: null, isLoading: false });
+                  break;
+
+                case "TOKEN_REFRESHED":
+                  console.log("✅ Token refreshed successfully");
+                  break;
+
+                default:
+                  break;
+              }
+            } catch (authError) {
+              console.error("❌ Auth state change error:", authError);
+              set({
+                user: null,
+                isEmailVerified: false,
+                error: "Authentication error occurred",
+                isLoading: false,
+              });
+            }
+          });
+
+          // Store subscription to clean up later if needed
+          // Note: In most cases, Supabase handles cleanup automatically
+        } catch (initError) {
+          console.error("❌ Critical auth initialization error:", initError);
+          set({
+            user: null,
+            isEmailVerified: false,
+            error: "Failed to initialize authentication",
+            isLoading: false,
+          });
+        }
       },
 
       // State management

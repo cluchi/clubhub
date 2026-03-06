@@ -6,12 +6,11 @@ import {
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-// import "react-native-reanimated";
+import { View, ActivityIndicator, StyleSheet } from "react-native";
 import { useAuthStore } from "@/stores/authStore";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { useEffect } from "react";
-import { router } from "expo-router";
+import { useEffect, useState } from "react";
 // import AuthRedirectHandler from "@/screens/AuthRedirectHandler";
 
 export default function RootLayout() {
@@ -20,13 +19,15 @@ export default function RootLayout() {
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
-  const { user, initializeAuth } = useAuthStore();
+  const { user, isLoading, initializeAuth } = useAuthStore();
+  const [authInitialized, setAuthInitialized] = useState(false);
 
   useEffect(() => {
     // Initialize Supabase auth state listener
     const initAuth = async () => {
       if (initializeAuth) {
         await initializeAuth();
+        setAuthInitialized(true);
       }
     };
     initAuth();
@@ -34,13 +35,28 @@ export default function RootLayout() {
 
   useEffect(() => {
     // Log the user state whenever it changes
-    console.log("User state changed:", user);
-  }, [user]);
+    console.log("User state changed:", user, "isLoading:", isLoading);
+  }, [user, isLoading]);
 
+  // Show loading screen while fonts are loading
   if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#007AFF" />
+      </View>
+    );
   }
+
+  // Show loading screen while auth is initializing
+  if (!authInitialized || isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#007AFF" />
+      </View>
+    );
+  }
+
+  // Now we have auth initialized, render appropriate screens
   if (!user) {
     return (
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
@@ -62,6 +78,7 @@ export default function RootLayout() {
       </ThemeProvider>
     );
   }
+
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
@@ -89,3 +106,12 @@ export default function RootLayout() {
     </ThemeProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#ffffff",
+  },
+});

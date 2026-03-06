@@ -14,4 +14,6 @@ export default {
   delete: "Șterge",
   cancel: "Anulează",
   logout: "Deconectare",
+  login: "Login",
+  navigate_to: "Navigate to",
 };

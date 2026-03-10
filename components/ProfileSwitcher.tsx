@@ -33,10 +33,10 @@ const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
           key={child.id}
           style={[
             styles.profileButton,
-            {
-              backgroundColor:
-                child.id === selectedChildId ? child.color : "transparent",
-            },
+            // {
+            //   backgroundColor:
+            //     child.id === selectedChildId ? child.color : "transparent",
+            // },
             child.id === selectedChildId ? null : styles.inactiveButton,
           ]}
           onPress={() => onSelectChild(child.id)}
@@ -49,6 +49,9 @@ const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
                   child.id === selectedChildId
                     ? Colors.neutral.white
                     : child.color,
+                borderColor:
+                  child.id === selectedChildId ? Colors.primary : "transparent",
+                borderWidth: child.id === selectedChildId ? 2 : 0,
               },
             ]}
           >
@@ -58,7 +61,7 @@ const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
                 {
                   color:
                     child.id === selectedChildId
-                      ? child.color
+                      ? Colors.primary
                       : Colors.neutral.white,
                 },
               ]}
@@ -66,9 +69,19 @@ const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
               {child.avatar}
             </Text>
           </View>
-          {child.id === selectedChildId && (
-            <Text style={styles.name}>{child.name}</Text>
-          )}
+          {/* {child.id === selectedChildId && ( */}
+          <Text
+            style={[
+              styles.name,
+              {
+                color:
+                  child.id === selectedChildId ? Colors.primary : child.color,
+              },
+            ]}
+          >
+            {child.name}
+          </Text>
+          {/* )} */}
         </TouchableOpacity>
       ))}
       {!children.length && (
@@ -96,26 +109,27 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   profileButton: {
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 8,
-    borderRadius: 24,
     marginRight: 12,
+    minWidth: 70,
   },
   inactiveButton: {
-    borderWidth: 1,
-    borderColor: Colors.neutral.light,
+    opacity: 0.6,
   },
   avatarContainer: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: Colors.neutral.white,
+    marginBottom: 4,
   },
   avatarText: {
-    fontSize: 16,
+    fontSize: 24,
     fontWeight: "600",
   },
   profileAddContainer: {
@@ -124,10 +138,9 @@ const styles = StyleSheet.create({
     paddingRight: 12,
   },
   name: {
-    marginLeft: 8,
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: "500",
-    color: Colors.neutral.white,
+    color: Colors.primary,
   },
   addButton: {
     borderWidth: 1,
@@ -135,16 +148,16 @@ const styles = StyleSheet.create({
     borderColor: Colors.neutral.medium,
   },
   addIconContainer: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1,
-    borderColor: Colors.neutral.medium,
+    backgroundColor: Colors.neutral.white,
+    marginBottom: 4,
   },
   addIcon: {
-    fontSize: 20,
+    fontSize: 32,
     color: Colors.neutral.darkGray,
   },
 });

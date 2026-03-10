@@ -6,7 +6,7 @@ import {
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { View, ActivityIndicator, StyleSheet } from "react-native";
+import { View, ActivityIndicator, StyleSheet, Platform } from "react-native";
 import { useAuthStore } from "@/stores/authStore";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -74,7 +74,7 @@ export default function RootLayout() {
             options={{ headerShown: false }}
           />
         </Stack>
-        <StatusBar style="auto" />
+        <StatusBar style={Platform.OS === "android" ? "dark" : "auto"} />
       </ThemeProvider>
     );
   }
@@ -102,7 +102,7 @@ export default function RootLayout() {
         />
         <Stack.Screen name="+not-found" />
       </Stack>
-      <StatusBar style="auto" />
+      <StatusBar style={Platform.OS === "android" ? "dark" : "auto"} />
     </ThemeProvider>
   );
 }
